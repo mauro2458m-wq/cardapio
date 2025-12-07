@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { MenuItem } from './types';
+import { MenuItem, CartItem } from './types';
 import useLocalStorage from './hooks/useLocalStorage';
 import AdminView from './views/AdminView';
 import MenuView from './views/MenuView';
 import { Header } from './components/Header';
+import CartModal from './components/CartModal';
 
 // O cardápio inicial agora tem alguns itens de exemplo.
 const initialMenuItems: MenuItem[] = [
@@ -167,6 +168,8 @@ const initialMenuItems: MenuItem[] = [
 const App: React.FC = () => {
   const [menuItems, setMenuItems] = useLocalStorage<MenuItem[]>('menuItems', initialMenuItems);
   const [isAdminView, setIsAdminView] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const WHATSAPP_NUMBER = '5581998371952';
 
   const addMenuItem = (item: Omit<MenuItem, 'id'>) => {
@@ -182,6 +185,33 @@ const App: React.FC = () => {
     setMenuItems(prevItems => prevItems.filter(item => item.id !== id));
   };
 
+  const addToCart = (itemToAdd: MenuItem) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === itemToAdd.id);
+      if (existingItem) {
+        return prevCart.map(item =>
+          item.id === itemToAdd.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prevCart, { ...itemToAdd, quantity: 1 }];
+    });
+  };
+
+  const updateCartQuantity = (itemId: string, newQuantity: number) => {
+    setCart(prevCart => {
+      if (newQuantity <= 0) {
+        return prevCart.filter(item => item.id !== itemId);
+      }
+      return prevCart.map(item =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      );
+    });
+  };
+
+  const clearCart = () => {
+    setCart([]);
+  };
+
   return (
     <div className="min-h-screen bg-background font-sans text-textPrimary">
       <Header isAdminView={isAdminView} setIsAdminView={setIsAdminView} />
@@ -194,9 +224,24 @@ const App: React.FC = () => {
             deleteMenuItem={deleteMenuItem}
           />
         ) : (
-          <MenuView menuItems={menuItems} whatsappNumber={WHATSAPP_NUMBER} />
+          <MenuView 
+            menuItems={menuItems} 
+            addToCart={addToCart} 
+            cartCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
+            onOpenCart={() => setIsCartOpen(true)}
+          />
         )}
       </main>
+
+       {isCartOpen && (
+        <CartModal
+          cartItems={cart}
+          onClose={() => setIsCartOpen(false)}
+          onUpdateQuantity={updateCartQuantity}
+          onClearCart={clearCart}
+          whatsappNumber={WHATSAPP_NUMBER}
+        />
+      )}
 
       <footer className="text-center p-4 text-textSecondary text-sm">
         <p>&copy; {new Date().getFullYear()} Várzea Alegre Futebol Clube. Todos os direitos reservados.</p>

@@ -7,3 +7,7 @@ export interface MenuItem {
   category: string;
   imageUrl?: string; // Base64 data URL
 }
+
+export interface CartItem extends MenuItem {
+    quantity: number;
+}
