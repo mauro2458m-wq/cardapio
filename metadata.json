@@ -1,0 +1,5 @@
+{
+  "name": "Cardápio Várzea Alegre FC",
+  "description": "Um cardápio digital editável para o Várzea Alegre Futebol Clube, permitindo o gerenciamento de pratos, preços e integração de pedidos via WhatsApp.",
+  "requestFramePermissions": []
+}
