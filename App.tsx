@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MenuItem } from './types';
 import useLocalStorage from './hooks/useLocalStorage';
@@ -6,13 +5,164 @@ import AdminView from './views/AdminView';
 import MenuView from './views/MenuView';
 import { Header } from './components/Header';
 
+// O cardápio inicial agora tem alguns itens de exemplo.
 const initialMenuItems: MenuItem[] = [
-  { id: '1', name: 'Cerveja Gelada (600ml)', description: 'Sua cerveja favorita, trincando!', price: 12.00, category: 'Bebidas' },
-  { id: '2', name: 'Porção de Batata Frita', description: 'Crocante por fora, macia por dentro. Acompanha maionese da casa.', price: 25.00, category: 'Porções' },
-  { id: '3', name: 'Espetinho de Carne', description: 'Delicioso espetinho de alcatra na brasa.', price: 10.00, category: 'Espetinhos' },
-  { id: '4', name: 'Refrigerante (Lata)', description: 'Coca-Cola, Guaraná, Fanta.', price: 6.00, category: 'Bebidas' },
-  { id: '5', name: 'Calabresa Acebolada', description: 'Porção generosa de calabresa fatiada com cebola.', price: 30.00, category: 'Porções' },
+  {
+    id: '1',
+    name: 'Batata Frita (Pequena)',
+    description: 'Porção de batata frita crocante.',
+    price: 15,
+    category: 'PETISCOS',
+  },
+  {
+    id: '2',
+    name: 'Batata Frita (Grande)',
+    description: 'Porção de batata frita crocante.',
+    price: 20,
+    category: 'PETISCOS',
+  },
+  {
+    id: '3',
+    name: 'Bisteca de Boi',
+    description: 'Suculenta bisteca de boi na chapa.',
+    price: 25,
+    category: 'PETISCOS',
+  },
+  {
+    id: '4',
+    name: 'Bisteca com Fritas',
+    description: 'Bisteca de boi acompanhada de batatas fritas.',
+    price: 40,
+    category: 'PETISCOS',
+  },
+  {
+    id: '5',
+    name: 'Galinha Guisada',
+    description: 'Pedaços de galinha cozidos em molho saboroso.',
+    price: 20,
+    category: 'PETISCOS',
+  },
+  {
+    id: '6',
+    name: 'Chambaril',
+    description: 'Prato regional com ossobuco e pirão.',
+    price: 25,
+    category: 'PETISCOS',
+  },
+  {
+    id: '7',
+    name: 'Pastel',
+    description: 'Sabores: Pizza, Misto, Frango com Calabresa, Frango com Queijo.',
+    price: 7,
+    category: 'LANCHES',
+  },
+  {
+    id: '8',
+    name: 'Cachorro Quente',
+    description: 'Pão, salsicha, molho especial, batata palha e milho.',
+    price: 4,
+    category: 'LANCHES',
+  },
+  {
+    id: '9',
+    name: 'Coxinha',
+    description: 'Saborosa coxinha de frango com massa crocante.',
+    price: 3,
+    category: 'LANCHES',
+  },
+  {
+    id: '10',
+    name: 'Cerveja Brahma (Litrão)',
+    description: 'Garrafa de 1 litro.',
+    price: 12,
+    category: 'BEBIDAS',
+  },
+  {
+    id: '11',
+    name: 'Cerveja Brahma (Litrinho)',
+    description: 'Garrafa de 300ml.',
+    price: 5,
+    category: 'BEBIDAS',
+  },
+  {
+    id: '12',
+    name: 'Cerveja Brahma (600ml)',
+    description: 'Garrafa de 600ml.',
+    price: 10,
+    category: 'BEBIDAS',
+  },
+  {
+    id: '13',
+    name: 'Cerveja Brahma Zero',
+    description: 'Long neck sem álcool.',
+    price: 6,
+    category: 'BEBIDAS',
+  },
+  {
+    id: '14',
+    name: 'Coca-Cola (Lata)',
+    description: 'Lata 350ml.',
+    price: 6,
+    category: 'REFRIGERANTES',
+  },
+  {
+    id: '15',
+    name: 'Fanta (Lata)',
+    description: 'Lata 350ml.',
+    price: 5,
+    category: 'REFRIGERANTES',
+  },
+  {
+    id: '16',
+    name: 'Soda (Lata)',
+    description: 'Lata 350ml.',
+    price: 5,
+    category: 'REFRIGERANTES',
+  },
+  {
+    id: '17',
+    name: 'Coca-Cola (1 Litro)',
+    description: 'Garrafa de 1 litro.',
+    price: 8,
+    category: 'REFRIGERANTES',
+  },
+  {
+    id: '18',
+    name: 'Coca-Cola (2 Litros)',
+    description: 'Garrafa de 2 litros.',
+    price: 15,
+    category: 'REFRIGERANTES',
+  },
+  {
+    id: '19',
+    name: 'Guaraná Santa Joana (2 Litros)',
+    description: 'Garrafa de 2 litros.',
+    price: 7,
+    category: 'REFRIGERANTES',
+  },
+  {
+    id: '20',
+    name: 'Coca-Cola (1.5 Litro)',
+    description: 'Garrafa de 1.5 litro.',
+    price: 12,
+    category: 'REFRIGERANTES',
+  },
+  {
+    id: '21',
+    name: 'Peixe Tilápia Completo',
+    description: 'Tilápia frita, acompanha baião, fritas e salada.',
+    price: 40,
+    category: 'PETISCOS',
+  },
+  {
+    id: '22',
+    name: 'Peixe Tilápia Simples',
+    description: 'Apenas a tilápia frita.',
+    price: 30,
+    category: 'PETISCOS',
+  },
 ];
+
 
 const App: React.FC = () => {
   const [menuItems, setMenuItems] = useLocalStorage<MenuItem[]>('menuItems', initialMenuItems);
@@ -47,6 +197,7 @@ const App: React.FC = () => {
           <MenuView menuItems={menuItems} whatsappNumber={WHATSAPP_NUMBER} />
         )}
       </main>
+
       <footer className="text-center p-4 text-textSecondary text-sm">
         <p>&copy; {new Date().getFullYear()} Várzea Alegre Futebol Clube. Todos os direitos reservados.</p>
       </footer>
